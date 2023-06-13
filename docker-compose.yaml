@@ -2,15 +2,17 @@ version: '3'
 
 services:
   openvpn:
-    build:
-      context: .
-      dockerfile: Dockerfile.openvpn
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile.openvpn
     image: openvpn:local
     command: /etc/openvpn/setup/configure.sh
     environment:
       OVPN_SERVER_NET: "192.168.100.0"
       OVPN_SERVER_MASK: "255.255.255.0"
       OVPN_PASSWD_AUTH: "true"
+      OVPN_SRV_CONFIG_FILE: "/etc/openvpn/scd/openvpn.conf"
+      OVPN_SRV_PROTO: "tcp"
     cap_add:
       - NET_ADMIN
     ports:
@@ -19,9 +21,8 @@ services:
     volumes:
       - ./easyrsa_master:/etc/openvpn/easyrsa
       - ./ccd_master:/etc/openvpn/ccd
+      - ./scd_master:/etc/openvpn/scd
   ovpn-admin:
-    build:
-      context: .
     image: ovpn-admin:local
     command: /app/ovpn-admin
     environment:
@@ -31,11 +32,13 @@ services:
       OVPN_CCD: "true"
       OVPN_CCD_PATH: "/mnt/ccd"
       EASYRSA_PATH: "/mnt/easyrsa"
-      OVPN_SERVER: "127.0.0.1:7777:tcp"
+      OVPN_SERVER: "104.243.33.192:7777:tcp"
       OVPN_INDEX_PATH: "/mnt/easyrsa/pki/index.txt"
       OVPN_AUTH: "true"
       OVPN_AUTH_DB_PATH: "/mnt/easyrsa/pki/users.db"
       LOG_LEVEL: "debug"
+      OVPN_TEMPLATES_CC_PATH: "/mnt/ccd/client.conf.tpl"
+      OVPN_TEMPLATES_CCD_PATH: "/mnt/ccd/ccd.tpl"
     network_mode: service:openvpn
     volumes:
       - ./easyrsa_master:/mnt/easyrsa

@@ -7,7 +7,6 @@ SERVER_CERT="${EASY_RSA_LOC}/pki/issued/server.crt"
 OVPN_SRV_NET=${OVPN_SERVER_NET:-172.16.100.0}
 OVPN_SRV_MASK=${OVPN_SERVER_MASK:-255.255.255.0}
 
-
 cd $EASY_RSA_LOC
 
 if [ -e "$SERVER_CERT" ]; then
@@ -56,4 +55,8 @@ fi
 
 mkdir -p /etc/openvpn/ccd
 
-openvpn --config /etc/openvpn/openvpn.conf --client-config-dir /etc/openvpn/ccd --port 1194 --proto tcp --management 127.0.0.1 8989 --dev tun0 --server ${OVPN_SRV_NET} ${OVPN_SRV_MASK}
+OVPN_SRV_CONFIG_FILE=${OVPN_SRV_CONFIG_FILE:-/etc/openvpn/openvpn.conf}
+OVPN_SRV_PORT=${OVPN_SRV_PORT:-1194}
+OVPN_SRV_PROTO=${OVPN_SRV_PROTO:-tcp}
+
+openvpn --config ${OVPN_SRV_CONFIG_FILE} --client-config-dir /etc/openvpn/ccd --port ${OVPN_SRV_PORT} --proto ${OVPN_SRV_PROTO} --management 127.0.0.1 8989 --dev tun0 --server ${OVPN_SRV_NET} ${OVPN_SRV_MASK}
