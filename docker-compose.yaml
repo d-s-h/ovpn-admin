@@ -17,7 +17,7 @@ services:
       - NET_ADMIN
     ports:
       - 7777:1194 # for openvpn
-      - 8080:8080 # for ovpn-admin because of network_mode
+      - 127.0.0.1:8080:8080 # for ovpn-admin because of network_mode, hide behind proxy
     volumes:
       - ./easyrsa_master:/etc/openvpn/easyrsa
       - ./ccd_master:/etc/openvpn/ccd

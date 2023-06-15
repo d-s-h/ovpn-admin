@@ -171,3 +171,40 @@ Flags:
 ## Further information
 
 Please feel free to use [issues](https://github.com/flant/ovpn-admin/issues) and [discussions](https://github.com/flant/ovpn-admin/discussions) to get help from maintainers & community.
+
+## Apache HTTPS setup
+
+- sudo apt install openssl
+- sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/server.key -out /etc/ssl/certs/server.crt
+
+
+- sudo apt install apache2
+- sudo apt install apache2-utils
+- sudo a2enmod proxy proxy_http proxy_html xml2enc authn_file authz_core ssl
+- sudo htpasswd -c /etc/apache2/.htpasswd username
+
+- if not exists
+sudo nano /etc/apache2/sites-available/default-ssl.conf
+- if not exists
+sudo a2ensite default-ssl.conf
+- default-ssl.conf:
+```
+<VirtualHost _default_:443>
+    ServerName your-domain.com
+
+    # Enable proxy and authentication
+    ProxyPass / http://localhost:8080/
+    ProxyPassReverse / http://localhost:8080/
+    ProxyPreserveHost On
+
+    <Location />
+        # Enable password protection
+        AuthType Basic
+        AuthName "Restricted Content"
+        AuthUserFile /etc/apache2/.htpasswd
+        Require valid-user
+    </Location>
+</VirtualHost>
+```
+- ports.conf comment out 'Listen 80'
+- sudo systemctl restart apache2
