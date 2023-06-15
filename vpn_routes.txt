@@ -13,6 +13,8 @@ myip.com
 linkedin.com
 openai.com
 chat.openai.com
+medium.com
+vpnlove.me
 
 # facebook addresses
 instagram.com
